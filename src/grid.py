@@ -43,7 +43,7 @@ class Field:
 
     def __repr__(self) -> str:
         """"""
-        return str(self.__value)
+        return "_" if self.is_empty else str(self.__value)
 
 
 class Grid:
