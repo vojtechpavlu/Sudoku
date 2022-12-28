@@ -100,10 +100,22 @@ class GridGenerator(ABC):
 
 
 class BacktrackingGenerator(GridGenerator):
-    """"""
+    """Jednoduchý náhdoný generátor rozložení hry sudoku, který je postaven
+    na elementárním algoritmu, tzv. 'backtracking'. Ten je rekurzivní analogií
+    na prohledávání do hloubky (Depth-First Search, DFS).
+    """
 
     def generate(self) -> Grid:
-        """"""
+        """Metoda implementující abstraktní metodu předka. Je odpovědná za
+        vybudování náhodné kombinace hodnot hry sudoku.
+
+        Samotná implementace pro zpřehlednění syntaxe využívá prostředků
+        výjimky typu `_GridGenerated`, pomocí které dokáže vrátit první
+        nalezenou konzistentní kombinaci - 'vyřešenou' hru.
+
+        Celkové těžiště výpočtu této metody je však delegováno do metody
+        `__fill_grid(Grid) -> Grid`.
+        """
         generated_grid = None
 
         try:
@@ -114,19 +126,35 @@ class BacktrackingGenerator(GridGenerator):
         return generated_grid
 
     def __fill_grid(self, grid: Grid) -> Grid:
-        """"""
+        """Samotný výpočet náhodné, úplné a konzistentní hrací plochy pro
+        sudoku. Pomocná delegace výpočetních prostředků.
+        """
+
+        # Pro všechny kombinace souřadnic `x` a `y`
         for x in range(9):
             for y in range(9):
                 field = grid.field(x, y)
+
+                # Pokud je políčko prádzné
                 if field.is_empty:
+
+                    # Zjisti hodnoty, kterými dané políčko může být vyplněno
+                    # a zamíchej je (prvek náhody)
                     possibles = self.possible_values(grid, field.x, field.y)
                     shuffle(possibles)
+
+                    # Pro každou takovou hodnotu ji vyzkoušej a rekurzivně
+                    # se zavolej (další iterace)
                     for value in possibles:
                         field.value = value
                         self.__fill_grid(grid)
+
+                        # Pokud řešení nebylo nalezeno, nastav tuto hodnotu
+                        # zpět na 0, tedy na nevyplněné políčko
                         field.value = 0
                     return grid
 
+        # Bylo nalezeno řešení. Pro předejití "nekonečného" běhu vyhoď výjimku
         raise _GridGenerated(grid)
 
 
