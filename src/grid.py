@@ -13,6 +13,8 @@ class Field:
         self.__x = x
         self.__y = y
         self.__value = value
+        assert (value in self.__AVAILABLE_VALUES,
+                f"Nepovolená hodnota '{value}'")
 
     @property
     def x(self) -> int:
@@ -52,6 +54,7 @@ class Grid:
     def __init__(self, fields: Iterable[Field]):
         """"""
         self.__fields = tuple(fields)
+        assert len(self.fields) == 81, "Hrací plocha musí mít 81 políček!"
 
     @property
     def fields(self) -> tuple[Field]:
