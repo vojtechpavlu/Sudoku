@@ -13,8 +13,6 @@ class Field:
         self.__x = x
         self.__y = y
         self.__value = value
-        assert (value in self.__AVAILABLE_VALUES,
-                f"Nepovolená hodnota '{value}'")
 
     @property
     def x(self) -> int:
