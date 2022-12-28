@@ -129,4 +129,26 @@ class Grid:
 
         return tuple(fields_in_square)
 
+    def can_be_at(self, value: int, x: int, y: int) -> bool:
+        """"""
+        # Test unikátnosti hodnoty v řádku
+        if value in [f.value for f in self.row(y)]:
+            return False
 
+        # Test unikátnosti hodnoty ve sloupci
+        elif value in [f.value for f in self.column(x)]:
+            return False
+
+        # Test unikátnosti hodnoty v malém čtverci
+        elif value in [f.value for f in self.small_square(x, y)]:
+            return False
+
+        # Pokud hodnota prošla všemi třemi testy
+        return True
+
+    def __repr__(self):
+        """"""
+        rows = []
+        for i in range(9):
+            rows.append(" ".join([str(f) for f in self.row(i)]))
+        return "\n".join(rows)
