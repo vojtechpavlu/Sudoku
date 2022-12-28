@@ -76,6 +76,22 @@ class Grid:
         """"""
         return len(self.empty_fields)
 
+    @property
+    def rows(self) -> tuple[tuple[Field]]:
+        """"""
+        rows = []
+        for y in range(9):
+            rows.append(self.row(y))
+        return tuple(rows)
+
+    @property
+    def columns(self) -> tuple[tuple[Field]]:
+        """"""
+        cols = []
+        for x in range(9):
+            cols.append(self.column(x))
+        return tuple(cols)
+
     def field(self, x: int, y: int) -> Field:
         """"""
         for field in self.fields:
