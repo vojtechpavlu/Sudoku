@@ -81,6 +81,36 @@ class Grid:
         for field in self.fields:
             if field.x == x and field.y == y:
                 return field
+        raise ValueError(f"Políčko se souřadnicemi [{x}, {y}] neexistuje!")
 
+    def column(self, x: int) -> tuple[Field]:
+        """"""
+        fields_in_column = []
+        for field in self.fields:
+            if field.x == x:
+                fields_in_column.append(field)
+        return tuple(fields_in_column)
+
+    def row(self, y: int) -> tuple[Field]:
+        """"""
+        fields_in_row = []
+        for field in self.fields:
+            if field.y == y:
+                fields_in_row.append(field)
+        return tuple(fields_in_row)
+
+    def small_square(self, x: int, y: int) -> tuple[Field]:
+        """"""
+        # Zjištění levého horního políčka v malém čtverci
+        base_x = (x // 3) * 3
+        base_y = (y // 3) * 3
+
+        fields_in_square = []
+
+        for i in range(3):
+            for j in range(3):
+                fields_in_square.append(self.field(base_x + i, base_y + j))
+
+        return tuple(fields_in_square)
 
 
