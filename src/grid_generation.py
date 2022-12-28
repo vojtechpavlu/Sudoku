@@ -76,7 +76,11 @@ class GridGenerator(ABC):
 
     @abstractmethod
     def generate(self) -> Grid:
-        """"""
+        """Abstraktní metoda odpovědná za stanovení závazné signatury, která
+        má být potomky této třídy implementována.
+
+        Implementace potomků této třídy jsou odpovědné za vybudování úplné a
+        konzistentní konfigurace hrací plochy."""
 
     @staticmethod
     def possible_values(grid: Grid, x: int, y: int) -> list[int]:
