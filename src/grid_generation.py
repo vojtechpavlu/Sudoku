@@ -159,13 +159,18 @@ class BacktrackingGenerator(GridGenerator):
 
 
 class _GridGenerated(Exception):
-    """"""
+    """Pomocná výjimka pro usnadnění přístupu v rámci rekurzivního výpočtu.
+    Jejím hlavním smyslem je získat možnost postoupit vybudované bludiště
+    i napříč backtracking-based výpočtem pro zpřehlednění kódu.
+    """
 
     def __init__(self, grid: Grid):
-        """"""
+        """Initor, který přijímá vybudovanou úplnou a konzistentní konfiguraci
+        hry."""
         self.__grid = grid
 
     @property
     def grid(self) -> Grid:
-        """"""
+        """Vlastnost vracející přijatou úplnou a konzistentní nově
+        vygenerovanou konfiguraci."""
         return self.__grid
