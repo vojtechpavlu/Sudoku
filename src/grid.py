@@ -140,6 +140,11 @@ class Grid:
         """Hluboká kopie této hrací plochy"""
         return Grid([field.copy for field in self.fields])
 
+    @property
+    def listify(self) -> list[list[Field]]:
+        """Převádí hrací plochu na seznam seznamů políček."""
+        return [list(row) for row in self.rows]
+
     def can_be_in_row(self, value: int, x: int, y: int):
         """Metoda sloužící k ověření, že hodnota v daném řádku je unikátní.
         Přitom je pro použitelnost sledované políčko z uvažování odstraněno,
