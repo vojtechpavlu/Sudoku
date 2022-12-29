@@ -1,19 +1,31 @@
-""""""
+"""Tento modul obsahuje definici řešitelů hry sudoku.
+
+Především pak definuje obecný abstraktní protokol pro všechny řešitele
+abstraktní třídou `SolverAlgorithm`.
+"""
 
 from abc import ABC, abstractmethod
-from src import Grid, Field
+from src import Grid
 
 
 class SolverAlgorithm(ABC):
-    """"""
+    """Abstraktní třída, jejíž instance představují objekty schopné poskytovat
+    službu řešení hry sudoku. Slouží jako obecná deklarace signatury metody
+    `solve(Grid) -> Grid`, která převádí neúplné rozložení na úplné; při
+    zachování konzistence."""
 
     @abstractmethod
     def solve(self, grid: Grid) -> Grid:
-        """"""
+        """Abstraktní metoda, která stanovuje signaturu metody, která má být
+        potomky této třídy implementována. Jejím cílem je poskytovat funkci
+        převodu neúplné, leč konzistentní konfigurace hrací plochy na úplnou.
+        """
 
 
 class BacktrackingSolver(SolverAlgorithm):
-    """"""
+    """Instance této třídy slouží pro řešení hry sudoku metodou prostého
+    backtrackingu.
+    """
 
     def solve(self, grid: Grid) -> Grid:
         """Metoda řídící hledání řešení. V rámci rekurzivního (backtracking)
