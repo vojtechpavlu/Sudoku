@@ -145,6 +145,29 @@ class Grid:
         """Převádí hrací plochu na seznam seznamů políček."""
         return [list(row) for row in self.rows]
 
+    @property
+    def is_complete(self) -> bool:
+        """Vlastnost vrací, zda-li je hrací plocha zcela vyplněna. Jinými slovy
+        počítá, kolik políček zůstává nevyplněných.
+        """
+        return len(self.empty_fields) == 0
+
+    @property
+    def is_consistent(self) -> bool:
+        """Vlastnost vrací, zda-li není porušeno žádné pravidlo.
+        To má pochopitelně smysl uvažovat pouze u políček, která jsou vyplněna.
+        """
+        for field in self.filled_fields:
+            if not self.can_be_at(field.value, field.x, field.y):
+                return False
+        return True
+
+    @property
+    def is_solved(self) -> bool:
+        """Vlastnost vrací, je-li hrací plocha vyřešena či nikoliv. To metoda
+        rozhoduje na základě úplnosti a konzistence."""
+        return self.is_complete and self.is_consistent
+
     def can_be_in_row(self, value: int, x: int, y: int):
         """Metoda sloužící k ověření, že hodnota v daném řádku je unikátní.
         Přitom je pro použitelnost sledované políčko z uvažování odstraněno,
