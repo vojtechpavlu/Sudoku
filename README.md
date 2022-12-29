@@ -122,13 +122,42 @@ Formálněji tedy máme množinu proměnných z matice
 přičemž platí, že definiční obor pro libovolnou proměnnou odpovídá stejnému
 rozsahu, tedy:
 
-````math
+```math
 Df_{i} = \{ 1, 2, ..., 9\}
 ```
 
-a již zbývají jen samotná omezení.
+a již zbývají jen samotná omezení, která odpovídají výše popsaným pravidlům.
 
 
+
+## Řešitelé hry
+
+Jednou z metod řešení úlohy třídy CSP je pomocí prohledávání stavového 
+prostoru. V nejjednodušším pojetí je k tomu využito jednoduchého algoritmu,
+tzv. *Backtracking*, který je analogický k algoritmu prohledávání do hloubky 
+(*Depth-First Search*, resp. *DFS*).
+
+Pro možnost implementace více různých algoritmů byl stanoven společný protokol
+pro tato řešení pomocí abstraktní třídy `SolverAlgorithm`, kterou lze nalézt
+v modulu `./src/solver.py`.
+
+Tuto implementuje aktuálně jediná konkrétní implementace postavená právě na
+backtrackingu, třída `BacktrackingSolver` nacházející se ve stejném modulu.
+
+
+
+## Generátory náhodných zadání
+
+K testování správnosti řešitelů je třeba jim poskytnout zadání, která mají být
+vyřešena. K tomu byl navržen algoritmus, který dokáže náhodná zadání generovat.
+
+Konkrétní implementaci lze nalézt v modulu `./src/grid_generation.py`, kde
+je uvedena třída `BacktrackingGenerator` implementující svého abstraktního 
+předka (třídu `GridGenerator`).
+
+Kromě vybudování konzistentního a úplného řešení (vyřešené hry), jsou instance
+této třídy také schopny náhodně některá políčka nastavit jako nevyplněná, čímž
+převedou hrací plochu do stavu neúplného, aniž by tkly jejich konzistenci.
 
 
 
