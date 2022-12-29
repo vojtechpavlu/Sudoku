@@ -97,6 +97,13 @@ class Grid:
         # Test, že počet dodaných políček odpovídá 81
         assert len(self.fields) == 81
 
+        # Test, že všechna políčka mají unikátní souřadnice. Porovnávání je
+        # provedeno na základě principu každý s každým dalším
+        for index, field1 in enumerate(self.fields):
+            for field2 in self.fields[index + 1:]:
+                if field1.x == field2.x and field1.y == field2.y:
+                    raise AssertionError("Dvě políčka mají stejné souřadnice!")
+
     @property
     def fields(self) -> tuple[Field]:
         """N-tice políček, ze kterých se hrací plocha sestává."""
@@ -230,6 +237,10 @@ class Grid:
         """Metoda odpovědná za vyhledání konkrétního políčka dle souřadnic
         `x` a `y`. Pokud takové políčko není nalezeno, je vyhozena výjimka.
         """
+        # Test vstupních parametrů
+        assert 0 <= x <= 8      # Test souřadnice x
+        assert 0 <= y <= 8      # Test souřadnice y
+
         for field in self.fields:
             if field.x == x and field.y == y:
                 return field
@@ -240,6 +251,9 @@ class Grid:
         souřadnice na ose `x`. Výstupem je tedy vyfiltrovaná n-tice políček,
         kde tato souřadnice odpovídá hodnotě dodaného parametru.
         """
+        # Test vstupních parametrů
+        assert 0 <= x <= 8      # Test souřadnice x
+
         fields_in_column = []
         for field in self.fields:
             if field.x == x:
@@ -251,6 +265,9 @@ class Grid:
         souřadnice na ose `y`. Výstupem je tedy vyfiltrovaná n-tice políček,
         kde tato souřadnice odpovídá hodnotě dodaného parametru.
         """
+        # Test vstupních parametrů
+        assert 0 <= y <= 8      # Test souřadnice y
+
         fields_in_row = []
         for field in self.fields:
             if field.y == y:
@@ -267,6 +284,10 @@ class Grid:
 
         Výstupem je n-tice těchto políček.
         """
+        # Test vstupních parametrů
+        assert 0 <= x <= 8      # Test souřadnice x
+        assert 0 <= y <= 8      # Test souřadnice y
+
         # Zjištění levého horního políčka v malém čtverci
         base_x = (x // 3) * 3
         base_y = (y // 3) * 3
@@ -292,6 +313,11 @@ class Grid:
         Pokud je kterékoliv z těchto pravidel porušeno, je vrácena hodnota
         `False`, jinak `True`.
         """
+        # Test vstupních parametrů
+        assert 0 <= value <= 9  # Test hodnoty
+        assert 0 <= x <= 8      # Test souřadnice x
+        assert 0 <= y <= 8      # Test souřadnice y
+
         # Pro splnění pravidla musí být splněny kumulativně všechny sledované
         # podmínky pro sledované políčko
         return all([
