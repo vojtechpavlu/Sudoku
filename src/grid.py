@@ -269,20 +269,13 @@ class Grid:
         Pokud je kterékoliv z těchto pravidel porušeno, je vrácena hodnota
         `False`, jinak `True`.
         """
-        # Test unikátnosti hodnoty v řádku
-        if value in [f.value for f in self.row(y)]:
-            return False
-
-        # Test unikátnosti hodnoty ve sloupci
-        elif value in [f.value for f in self.column(x)]:
-            return False
-
-        # Test unikátnosti hodnoty v malém čtverci
-        elif value in [f.value for f in self.small_square(x, y)]:
-            return False
-
-        # Pokud hodnota prošla všemi třemi testy
-        return True
+        # Pro splnění pravidla musí být splněny kumulativně všechny sledované
+        # podmínky pro sledované políčko
+        return all([
+            self.can_be_in_row(value, x, y),
+            self.can_be_in_column(value, x, y),
+            self.can_be_in_small_square(value, x, y)
+        ])
 
     def __repr__(self) -> str:
         """Metoda odpovědná za reprezentaci hrací plochy coby textového
