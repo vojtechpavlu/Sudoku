@@ -1,48 +1,69 @@
-""""""
+"""Tento modul obsahuje samotnou definici pravidel hry sudoku.
+
+Obsahuje definice dvou entit - políčka (třídy `Field`) a hrací plochy (třídy
+`Grid`). Nad rámec definice těchto struktur jsou instance těchto tříd vybaveny
+jednoduchými nástroji pro snazší manipulaci s těmito objekty.
+"""
 
 from typing import Iterable
 
 
 class Field:
-    """"""
+    """Instance této třídy reprezentují každé jednotlivé políčko hrací plochy.
+    Každé políčko je někde na hrací ploše umístěno (má souřadnice v osách `x`
+    a `y`) a má nějakou hodnotu.
 
+    Tato hodnota může nabývat libovolného celého čísla v rozmezí intervalu
+    `[1, 9]`, přičemž také může jít o prázdné políčko, které se značí hodnotou
+    `0`, která je jinak neplatná.
+    """
+
+    # Povolené hodnoty, kterých může políčko nabývat; interval [1, 9]
     __AVAILABLE_VALUES = [i for i in range(10)]
 
     def __init__(self, x: int, y: int, value: int):
-        """"""
+        """Initor políčka, který přijímá souřadnice os `x` a `y` (počítáno od
+        `0`) a hodnoty políčka, která smí nabývat pouze hodnot v intervalu
+        `[0, 9]`, přičemž hodnota `0` odpovídá prázdnému políčku.
+        """
         self.__x = x
         self.__y = y
         self.__value = value
 
     @property
     def x(self) -> int:
-        """"""
+        """Souřadnice osy `x` tohoto políčka"""
         return self.__x
 
     @property
     def y(self) -> int:
-        """"""
+        """Souřadnice osy `y` tohoto políčka"""
         return self.__y
 
     @property
     def value(self) -> int:
-        """"""
+        """Hodnota tohoto políčka"""
         return self.__value
 
     @value.setter
     def value(self, new_value: int):
-        """"""
+        """Setter pro nastavení hodnoty políčka. Pokud není tato hodnota
+        platnou (tedy v intervalu [0, 9], kde 0 odpovídá prázdnému políčku),
+        pak je vyhozena výjimka.
+        """
         if new_value not in self.__AVAILABLE_VALUES:
             raise ValueError(f"Hodnota '{new_value}' není povolena!")
         self.__value = new_value
 
     @property
     def is_empty(self) -> bool:
-        """"""
+        """Vrací, zda-li je políčko prázdné či nikoliv"""
         return self.value == 0
 
     def __repr__(self) -> str:
-        """"""
+        """Vrací textovou reprezentaci políčka. Používá k tomu znaku podtržítka
+        pro prázdné políčko, jinak vrací hodnotu políčka.
+        """
         return "_" if self.is_empty else str(self.__value)
 
 
