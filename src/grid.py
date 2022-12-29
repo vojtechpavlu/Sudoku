@@ -140,6 +140,64 @@ class Grid:
         """Hluboká kopie této hrací plochy"""
         return Grid([field.copy for field in self.fields])
 
+    def can_be_in_row(self, value: int, x: int, y: int):
+        """Metoda sloužící k ověření, že hodnota v daném řádku je unikátní.
+        Přitom je pro použitelnost sledované políčko z uvažování odstraněno,
+        aby bylo možné kontrolovat i už vyplněná políčka.
+
+        Metoda přijímá v parametru dodanou hodnotu, která má být ověřena a
+        souřadnice `x` a `y` sledovaného políčka.
+        """
+        # Test vstupních parametrů
+        assert 0 <= value <= 9  # Test hodnoty
+        assert 0 <= x <= 8      # Test souřadnice x
+        assert 0 <= y <= 8      # Test souřadnice y
+
+        # Profiltrování políček v řádku, které nejsou dané souřadnice x
+        row_without_x = [f for f in self.row(y) if f.x != x]
+
+        # Vrať, je-li hodnota v řádku unikátní
+        return value not in [f.value for f in row_without_x]
+
+    def can_be_in_column(self, value: int, x: int, y: int):
+        """Metoda sloužící k ověření, že hodnota v daném sloupečku je unikátní.
+        Přitom je pro použitelnost sledované políčko z uvažování odstraněno,
+        aby bylo možné kontrolovat i už vyplněná políčka.
+
+        Metoda přijímá v parametru dodanou hodnotu, která má být ověřena a
+        souřadnice `x` a `y` sledovaného políčka.
+        """
+        # Test vstupních parametrů
+        assert 0 <= value <= 9  # Test hodnoty
+        assert 0 <= x <= 8      # Test souřadnice x
+        assert 0 <= y <= 8      # Test souřadnice y
+
+        # Profiltrování políček ve sloupečku, které nejsou dané souřadnice y
+        col_without_y = [f for f in self.column(x) if f.y != y]
+
+        # Vrať, je-li hodnota v řádku unikátní
+        return value not in [f.value for f in col_without_y]
+
+    def can_be_in_small_square(self, value: int, x: int, y: int):
+        """Metoda sloužící k ověření, že hodnota v daném malém čtverci je
+        unikátní. Přitom je pro použitelnost sledované políčko z uvažování
+        odstraněno, aby bylo možné kontrolovat i už vyplněná políčka.
+
+        Metoda přijímá v parametru dodanou hodnotu, která má být ověřena a
+        souřadnice `x` a `y` sledovaného políčka.
+        """
+        # Test vstupních parametrů
+        assert 0 <= value <= 9  # Test hodnoty
+        assert 0 <= x <= 8      # Test souřadnice x
+        assert 0 <= y <= 8      # Test souřadnice y
+
+        # Profiltrování políček v malém čtverci bez sledovaného políčka
+        small_square = [field for field in self.small_square(x, y)
+                        if field.y != y and field.x != x]
+
+        # Vrať, je-li hodnota v řádku unikátní
+        return value not in [f.value for f in small_square]
+
     def field(self, x: int, y: int) -> Field:
         """Metoda odpovědná za vyhledání konkrétního políčka dle souřadnic
         `x` a `y`. Pokud takové políčko není nalezeno, je vyhozena výjimka.
