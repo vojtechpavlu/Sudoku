@@ -18,7 +18,7 @@ class Field:
     `0`, která je jinak neplatná.
     """
 
-    # Povolené hodnoty, kterých může políčko nabývat; interval [1, 9]
+    # Povolené hodnoty, kterých může políčko nabývat; interval [0, 9]
     __AVAILABLE_VALUES = [i for i in range(10)]
 
     def __init__(self, x: int, y: int, value: int):
@@ -26,6 +26,13 @@ class Field:
         `0`) a hodnoty políčka, která smí nabývat pouze hodnot v intervalu
         `[0, 9]`, přičemž hodnota `0` odpovídá prázdnému políčku.
         """
+        # Test, že jsou souřadnice korektní, v rozmezí intervalu [0, 8]
+        assert x in range(9)
+        assert y in range(9)
+
+        # Test, že hodnota políčka je v rozmezí itervalu [0, 9] (0 pro prázdné)
+        assert value in self.__AVAILABLE_VALUES
+
         self.__x = x
         self.__y = y
         self.__value = value
@@ -51,8 +58,9 @@ class Field:
         platnou (tedy v intervalu [0, 9], kde 0 odpovídá prázdnému políčku),
         pak je vyhozena výjimka.
         """
-        if new_value not in self.__AVAILABLE_VALUES:
-            raise ValueError(f"Hodnota '{new_value}' není povolena!")
+        # Test, že dodaná nová hodnota je v povoleném intervalu ([0, 9])
+        assert new_value in self.__AVAILABLE_VALUES
+
         self.__value = new_value
 
     @property
@@ -80,7 +88,9 @@ class Grid:
         výjimka.
         """
         self.__fields = tuple(fields)
-        assert len(self.fields) == 81, "Hrací plocha musí mít 81 políček!"
+
+        # Test, že počet dodaných políček odpovídá 81
+        assert len(self.fields) == 81
 
     @property
     def fields(self) -> tuple[Field]:
