@@ -32,6 +32,9 @@ class BacktrackingSolver(SolverAlgorithm):
         prohledávání je odpovědná za odchycení výjimky, která slouží jako
         nejsnazší způsob probublání řešení až do volající instance.
         """
+        # Vytvoření kopie hrací plochy
+        grid = grid.copy
+
         try:
             # Začni rekurzivně prohledávat - to vyústí ve výjimku
             self.__backtrack(grid)

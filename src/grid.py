@@ -97,6 +97,13 @@ class Grid:
         # Test, že počet dodaných políček odpovídá 81
         assert len(self.fields) == 81
 
+        # Test, že všechna políčka mají unikátní souřadnice. Porovnávání je
+        # provedeno na základě principu každý s každým dalším
+        for index, field1 in enumerate(self.fields):
+            for field2 in self.fields[index + 1:]:
+                if field1.x == field2.x and field1.y == field2.y:
+                    raise AssertionError("Dvě políčka mají stejné souřadnice!")
+
     @property
     def fields(self) -> tuple[Field]:
         """N-tice políček, ze kterých se hrací plocha sestává."""
@@ -140,10 +147,100 @@ class Grid:
         """Hluboká kopie této hrací plochy"""
         return Grid([field.copy for field in self.fields])
 
+    @property
+    def listify(self) -> list[list[Field]]:
+        """Převádí hrací plochu na seznam seznamů políček."""
+        return [list(row) for row in self.rows]
+
+    @property
+    def is_complete(self) -> bool:
+        """Vlastnost vrací, zda-li je hrací plocha zcela vyplněna. Jinými slovy
+        počítá, kolik políček zůstává nevyplněných.
+        """
+        return len(self.empty_fields) == 0
+
+    @property
+    def is_consistent(self) -> bool:
+        """Vlastnost vrací, zda-li není porušeno žádné pravidlo.
+        To má pochopitelně smysl uvažovat pouze u políček, která jsou vyplněna.
+        """
+        for field in self.filled_fields:
+            if not self.can_be_at(field.value, field.x, field.y):
+                return False
+        return True
+
+    @property
+    def is_solved(self) -> bool:
+        """Vlastnost vrací, je-li hrací plocha vyřešena či nikoliv. To metoda
+        rozhoduje na základě úplnosti a konzistence."""
+        return self.is_complete and self.is_consistent
+
+    def can_be_in_row(self, value: int, x: int, y: int):
+        """Metoda sloužící k ověření, že hodnota v daném řádku je unikátní.
+        Přitom je pro použitelnost sledované políčko z uvažování odstraněno,
+        aby bylo možné kontrolovat i už vyplněná políčka.
+
+        Metoda přijímá v parametru dodanou hodnotu, která má být ověřena a
+        souřadnice `x` a `y` sledovaného políčka.
+        """
+        # Test vstupních parametrů
+        assert 0 <= value <= 9  # Test hodnoty
+        assert 0 <= x <= 8      # Test souřadnice x
+        assert 0 <= y <= 8      # Test souřadnice y
+
+        # Profiltrování políček v řádku, které nejsou dané souřadnice x
+        row_without_x = [f for f in self.row(y) if f.x != x]
+
+        # Vrať, je-li hodnota v řádku unikátní
+        return value not in [f.value for f in row_without_x]
+
+    def can_be_in_column(self, value: int, x: int, y: int):
+        """Metoda sloužící k ověření, že hodnota v daném sloupečku je unikátní.
+        Přitom je pro použitelnost sledované políčko z uvažování odstraněno,
+        aby bylo možné kontrolovat i už vyplněná políčka.
+
+        Metoda přijímá v parametru dodanou hodnotu, která má být ověřena a
+        souřadnice `x` a `y` sledovaného políčka.
+        """
+        # Test vstupních parametrů
+        assert 0 <= value <= 9  # Test hodnoty
+        assert 0 <= x <= 8      # Test souřadnice x
+        assert 0 <= y <= 8      # Test souřadnice y
+
+        # Profiltrování políček ve sloupečku, které nejsou dané souřadnice y
+        col_without_y = [f for f in self.column(x) if f.y != y]
+
+        # Vrať, je-li hodnota v řádku unikátní
+        return value not in [f.value for f in col_without_y]
+
+    def can_be_in_small_square(self, value: int, x: int, y: int):
+        """Metoda sloužící k ověření, že hodnota v daném malém čtverci je
+        unikátní. Přitom je pro použitelnost sledované políčko z uvažování
+        odstraněno, aby bylo možné kontrolovat i už vyplněná políčka.
+
+        Metoda přijímá v parametru dodanou hodnotu, která má být ověřena a
+        souřadnice `x` a `y` sledovaného políčka.
+        """
+        # Test vstupních parametrů
+        assert 0 <= value <= 9  # Test hodnoty
+        assert 0 <= x <= 8      # Test souřadnice x
+        assert 0 <= y <= 8      # Test souřadnice y
+
+        # Profiltrování políček v malém čtverci bez sledovaného políčka
+        small_square = [field for field in self.small_square(x, y)
+                        if field.y != y and field.x != x]
+
+        # Vrať, je-li hodnota v řádku unikátní
+        return value not in [f.value for f in small_square]
+
     def field(self, x: int, y: int) -> Field:
         """Metoda odpovědná za vyhledání konkrétního políčka dle souřadnic
         `x` a `y`. Pokud takové políčko není nalezeno, je vyhozena výjimka.
         """
+        # Test vstupních parametrů
+        assert 0 <= x <= 8      # Test souřadnice x
+        assert 0 <= y <= 8      # Test souřadnice y
+
         for field in self.fields:
             if field.x == x and field.y == y:
                 return field
@@ -154,6 +251,9 @@ class Grid:
         souřadnice na ose `x`. Výstupem je tedy vyfiltrovaná n-tice políček,
         kde tato souřadnice odpovídá hodnotě dodaného parametru.
         """
+        # Test vstupních parametrů
+        assert 0 <= x <= 8      # Test souřadnice x
+
         fields_in_column = []
         for field in self.fields:
             if field.x == x:
@@ -165,6 +265,9 @@ class Grid:
         souřadnice na ose `y`. Výstupem je tedy vyfiltrovaná n-tice políček,
         kde tato souřadnice odpovídá hodnotě dodaného parametru.
         """
+        # Test vstupních parametrů
+        assert 0 <= y <= 8      # Test souřadnice y
+
         fields_in_row = []
         for field in self.fields:
             if field.y == y:
@@ -181,6 +284,10 @@ class Grid:
 
         Výstupem je n-tice těchto políček.
         """
+        # Test vstupních parametrů
+        assert 0 <= x <= 8      # Test souřadnice x
+        assert 0 <= y <= 8      # Test souřadnice y
+
         # Zjištění levého horního políčka v malém čtverci
         base_x = (x // 3) * 3
         base_y = (y // 3) * 3
@@ -192,6 +299,46 @@ class Grid:
                 fields_in_square.append(self.field(base_x + i, base_y + j))
 
         return tuple(fields_in_square)
+
+    def field_inconsistencies_number(self, x: int, y: int) -> int:
+        """Metoda vypočítává počet porušených pravidel pro konkrétní políčko.
+        """
+        # Test vstupních parametrů
+        assert 0 <= x <= 8      # Test souřadnice x
+        assert 0 <= y <= 8      # Test souřadnice y
+
+        field = self.field(x, y)
+
+        # Pokud je políčko prázdné, nemůže být nekonzistentní
+        if field.is_empty:
+            return 0
+
+        # Pokud je políčko vyplněno, počítá se jako počet porušených pravidel
+        else:
+            value = field.value
+
+            # Boolean hodnoty je převáděny na 0 (False) nebo 1 (True), lze
+            # je tedy sčítat
+            return 3 - sum([
+                self.can_be_in_row(value, x, y),
+                self.can_be_in_column(value, x, y),
+                self.can_be_in_small_square(value, x, y)
+            ])
+
+    def grid_inconsistencies_number(self) -> int:
+        """Metoda vypočítává počet nekonzistencí napříč celou hrací plochou.
+        Tuto hodnotu počítá jako součet všech nekonzistencí napříč všemi 81
+        políčky celé hrací plochy.
+        """
+        return sum([
+            self.field_inconsistencies_number(f.x, f.y) for f in self.fields
+        ])
+
+    def possible_values(self, x: int, y: int) -> tuple[int]:
+        """Metoda vrací všechny hodnoty, kterými lze políčko vyplnit tak, aby
+        nebylo narušeno žádné pravidlo konzistence hrací plochy.
+        """
+        return tuple([val for val in range(1, 9) if self.can_be_at(val, x, y)])
 
     def can_be_at(self, value: int, x: int, y: int) -> bool:
         """Metoda odpovědná za ověření, zda-li by dodaná hodnota na dodaných
@@ -206,20 +353,18 @@ class Grid:
         Pokud je kterékoliv z těchto pravidel porušeno, je vrácena hodnota
         `False`, jinak `True`.
         """
-        # Test unikátnosti hodnoty v řádku
-        if value in [f.value for f in self.row(y)]:
-            return False
+        # Test vstupních parametrů
+        assert 0 <= value <= 9  # Test hodnoty
+        assert 0 <= x <= 8      # Test souřadnice x
+        assert 0 <= y <= 8      # Test souřadnice y
 
-        # Test unikátnosti hodnoty ve sloupci
-        elif value in [f.value for f in self.column(x)]:
-            return False
-
-        # Test unikátnosti hodnoty v malém čtverci
-        elif value in [f.value for f in self.small_square(x, y)]:
-            return False
-
-        # Pokud hodnota prošla všemi třemi testy
-        return True
+        # Pro splnění pravidla musí být splněny kumulativně všechny sledované
+        # podmínky pro sledované políčko
+        return all([
+            self.can_be_in_row(value, x, y),
+            self.can_be_in_column(value, x, y),
+            self.can_be_in_small_square(value, x, y)
+        ])
 
     def __repr__(self) -> str:
         """Metoda odpovědná za reprezentaci hrací plochy coby textového
