@@ -68,36 +68,44 @@ class Field:
 
 
 class Grid:
-    """"""
+    """Instance této třídy reprezentují hrací plochu hry sudoku.
+    Hrací plocha se sestává ze sady políček, která jsou opatřena kromě hodnoty
+    i vlastními souřadnicemi v osách `x` a `y`. Díky tomu lze mezi nimi
+    vyhledávat, filtrovat a libovolně tyto sdružovat.
+    """
 
     def __init__(self, fields: Iterable[Field]):
-        """"""
+        """Initor, který přijímá sadu políček, ze kterých je hrací plocha
+        sestavena. Pokud políček není validní počet (tedy 81) je vyhozena
+        výjimka.
+        """
         self.__fields = tuple(fields)
         assert len(self.fields) == 81, "Hrací plocha musí mít 81 políček!"
 
     @property
     def fields(self) -> tuple[Field]:
-        """"""
+        """N-tice políček, ze kterých se hrací plocha sestává."""
         return self.__fields
 
     @property
     def empty_fields(self) -> tuple[Field]:
-        """"""
+        """N-tice prázdných políček, ze kterých se hrací plocha sestává."""
         return tuple([f for f in self.fields if f.is_empty])
 
     @property
     def filled_fields(self) -> tuple[Field]:
-        """"""
+        """N-tice vyplněných políček, ze kterých se hrací plocha sestává."""
         return tuple([f for f in self.fields if not f.is_empty])
 
     @property
     def num_of_empty_fields(self) -> int:
-        """"""
+        """Počet prázdných políček."""
         return len(self.empty_fields)
 
     @property
     def rows(self) -> tuple[tuple[Field]]:
-        """"""
+        """Dvourozměrná n-tice, která sdružuje políčka uspořádaná dle řádků.
+        """
         rows = []
         for y in range(9):
             rows.append(self.row(y))
@@ -105,21 +113,27 @@ class Grid:
 
     @property
     def columns(self) -> tuple[tuple[Field]]:
-        """"""
+        """Dvourozměrná n-tice která sdružuje políčka uspořádaná dle sloupců.
+        """
         cols = []
         for x in range(9):
             cols.append(self.column(x))
         return tuple(cols)
 
     def field(self, x: int, y: int) -> Field:
-        """"""
+        """Metoda odpovědná za vyhledání konkrétního políčka dle souřadnic
+        `x` a `y`. Pokud takové políčko není nalezeno, je vyhozena výjimka.
+        """
         for field in self.fields:
             if field.x == x and field.y == y:
                 return field
         raise ValueError(f"Políčko se souřadnicemi [{x}, {y}] neexistuje!")
 
     def column(self, x: int) -> tuple[Field]:
-        """"""
+        """Metoda, která se pokusí vyhledat konkrétní sloupeček z dodané
+        souřadnice na ose `x`. Výstupem je tedy vyfiltrovaná n-tice políček,
+        kde tato souřadnice odpovídá hodnotě dodaného parametru.
+        """
         fields_in_column = []
         for field in self.fields:
             if field.x == x:
@@ -127,7 +141,10 @@ class Grid:
         return tuple(fields_in_column)
 
     def row(self, y: int) -> tuple[Field]:
-        """"""
+        """Metoda, která se pokusí vyhledat konkrétní řádek z dodané
+        souřadnice na ose `y`. Výstupem je tedy vyfiltrovaná n-tice políček,
+        kde tato souřadnice odpovídá hodnotě dodaného parametru.
+        """
         fields_in_row = []
         for field in self.fields:
             if field.y == y:
@@ -135,7 +152,15 @@ class Grid:
         return tuple(fields_in_row)
 
     def small_square(self, x: int, y: int) -> tuple[Field]:
-        """"""
+        """Metoda, která se pokusí vyhledat všechna políčka malého čtverce
+        hrací plochy, jehož políčko o dodaných souřadnicích je součástí.
+
+        Princip funkce je takový, že se vyhledá z dodaných souřadnic levý
+        horní roh příslušného malého čtverce a následně se pouze transpozičně
+        dohledají políčka v tomto čtverci.
+
+        Výstupem je n-tice těchto políček.
+        """
         # Zjištění levého horního políčka v malém čtverci
         base_x = (x // 3) * 3
         base_y = (y // 3) * 3
@@ -149,7 +174,18 @@ class Grid:
         return tuple(fields_in_square)
 
     def can_be_at(self, value: int, x: int, y: int) -> bool:
-        """"""
+        """Metoda odpovědná za ověření, zda-li by dodaná hodnota na dodaných
+        souřadnicích pro tuto hrací plochu nenarušila konzistenci hry.
+
+        Tato konzistence odpovídá třem jednoduchým obecným pravidlům, tedy:
+
+        - unikátnost hodnoty v řádku
+        - unikátnost hodnoty ve sloupečku
+        - unikátnost hodnoty v malém čtverci
+
+        Pokud je kterékoliv z těchto pravidel porušeno, je vrácena hodnota
+        `False`, jinak `True`.
+        """
         # Test unikátnosti hodnoty v řádku
         if value in [f.value for f in self.row(y)]:
             return False
@@ -165,8 +201,12 @@ class Grid:
         # Pokud hodnota prošla všemi třemi testy
         return True
 
-    def __repr__(self):
-        """"""
+    def __repr__(self) -> str:
+        """Metoda odpovědná za reprezentaci hrací plochy coby textového
+        řetězce. Celkovým výstupem této metody je transformace hrací plochy
+        na jednotlivé hodnoty políček uspořádané po řádcích, přičemž jsou
+        hodnoty v řádku odděleny mezerami.
+        """
         rows = []
         for i in range(9):
             rows.append(" ".join([str(f) for f in self.row(i)]))
