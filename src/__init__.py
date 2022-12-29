@@ -4,3 +4,4 @@ a konzistentních konfigurací hrací plochy sudoku.
 
 from src.grid import Field, Grid
 from src.grid_generation import GridGenerator, BacktrackingGenerator
+from src.solver import SolverAlgorithm, BacktrackingSolver

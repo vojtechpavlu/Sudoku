@@ -68,6 +68,11 @@ class Field:
         """Vrací, zda-li je políčko prázdné či nikoliv"""
         return self.value == 0
 
+    @property
+    def copy(self) -> "Field":
+        """Kopie tohoto políčka."""
+        return Field(self.x, self.y, self.value)
+
     def __repr__(self) -> str:
         """Vrací textovou reprezentaci políčka. Používá k tomu znaku podtržítka
         pro prázdné políčko, jinak vrací hodnotu políčka.
@@ -129,6 +134,11 @@ class Grid:
         for x in range(9):
             cols.append(self.column(x))
         return tuple(cols)
+
+    @property
+    def copy(self) -> "Grid":
+        """Hluboká kopie této hrací plochy"""
+        return Grid([field.copy for field in self.fields])
 
     def field(self, x: int, y: int) -> Field:
         """Metoda odpovědná za vyhledání konkrétního políčka dle souřadnic

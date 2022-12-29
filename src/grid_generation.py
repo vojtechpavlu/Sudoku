@@ -65,6 +65,10 @@ class GridGenerator(ABC):
         """Metoda odpovědná za náhodné vyprázdnění některých políček s cílem
         vytvořit z 'vyřešené' hry hádanku.
         """
+
+        # Vytvoření hluboké kopie dodané hrací plochy
+        grid = grid.copy
+
         # Opakuj tolikrát, kolik má být vyprázdněno políček
         for _ in range(self.num_of_empty_values):
 
@@ -164,7 +168,7 @@ class BacktrackingGenerator(GridGenerator):
 
 class _GridGenerated(Exception):
     """Pomocná výjimka pro usnadnění přístupu v rámci rekurzivního výpočtu.
-    Jejím hlavním smyslem je získat možnost postoupit vybudované bludiště
+    Jejím hlavním smyslem je získat možnost postoupit vybudovanou hrací plochu
     i napříč backtracking-based výpočtem pro zpřehlednění kódu.
     """
 
