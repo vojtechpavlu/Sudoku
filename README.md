@@ -122,7 +122,9 @@ Formálněji tedy máme množinu proměnných z matice
 přičemž platí, že definiční obor pro libovolnou proměnnou odpovídá stejnému
 rozsahu, tedy:
 
-$$Df_{i} = \{ 1, 2, ..., 9\}$$
+````math
+Df_{i} = \{ 1, 2, ..., 9\}
+```
 
 a již zbývají jen samotná omezení.
 
