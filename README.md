@@ -5,6 +5,14 @@ stavovém prostoru. Tento projekt byl vyvinut jako studijní pomůcka pro výuku
 umělé inteligence při 
 [Smíchovské střední průmyslové škole a gymnáziu](https://www.ssps.cz/).
 
+
+**Zajímavé odkazy**
+
+- [Sudoku na Wikipedii](https://cs.wikipedia.org/wiki/Sudoku)
+- [Splňování podmínek na Wikipedii](https://en.wikipedia.org/wiki/Constraint_satisfaction_problem)
+- [Studijní materiály na Google Drive](https://tinyurl.com/ssps-umela-inteligence)
+
+
 ---
 
 Samotný projekt se zaměřuje na ukázku možného řešení úlohy třídy **Constraint
@@ -71,8 +79,8 @@ definovaných omezení. O takových pak mluvíme jako o tzv. ***konzistentních
 
 Formálně bychom tuto množinu mohli popsat následovně:
 
-$$C_{1}, C_{2}, ... , C_{m}; C_{k} \text{ souvisí s } x_{Cj1}, x_{Cj2}, ... , 
-x_{Cjk}, $$
+$$C_{1}, C_{2}, ... , C_{m}; C_{k} \text{ souvisí s } x_{C_{j1}}, x_{C_{j2}}, ... , 
+x_{C_{jk}}, $$
 
 
 ### Výstup úlohy
@@ -135,7 +143,10 @@ a již zbývají jen samotná omezení, která odpovídají výše popsaným pra
 Jednou z metod řešení úlohy třídy CSP je pomocí prohledávání stavového 
 prostoru. V nejjednodušším pojetí je k tomu využito jednoduchého algoritmu,
 tzv. *Backtracking*, který je analogický k algoritmu prohledávání do hloubky 
-(*Depth-First Search*, resp. *DFS*).
+(*Depth-First Search*, resp. *DFS*). Dobré je však poznamenat, že tento 
+algoritmus patří pro potřeby tohoto použití mezi tzv. *brute-force*, tedy
+výpočet hrubou silou. Jeho nevýhoda pak tkví v nutnosti slepého procházení 
+všech variant, dokud není řešení nalezeno, čímž se řadí mezi méně efektivní.
 
 Pro možnost implementace více různých algoritmů byl stanoven společný protokol
 pro tato řešení pomocí abstraktní třídy `SolverAlgorithm`, kterou lze nalézt
