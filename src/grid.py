@@ -300,6 +300,46 @@ class Grid:
 
         return tuple(fields_in_square)
 
+    def field_inconsistencies_number(self, x: int, y: int) -> int:
+        """Metoda vypočítává počet porušených pravidel pro konkrétní políčko.
+        """
+        # Test vstupních parametrů
+        assert 0 <= x <= 8      # Test souřadnice x
+        assert 0 <= y <= 8      # Test souřadnice y
+
+        field = self.field(x, y)
+
+        # Pokud je políčko prázdné, nemůže být nekonzistentní
+        if field.is_empty:
+            return 0
+
+        # Pokud je políčko vyplněno, počítá se jako počet porušených pravidel
+        else:
+            value = field.value
+
+            # Boolean hodnoty je převáděny na 0 (False) nebo 1 (True), lze
+            # je tedy sčítat
+            return 3 - sum([
+                self.can_be_in_row(value, x, y),
+                self.can_be_in_column(value, x, y),
+                self.can_be_in_small_square(value, x, y)
+            ])
+
+    def grid_inconsistencies_number(self) -> int:
+        """Metoda vypočítává počet nekonzistencí napříč celou hrací plochou.
+        Tuto hodnotu počítá jako součet všech nekonzistencí napříč všemi 81
+        políčky celé hrací plochy.
+        """
+        return sum([
+            self.field_inconsistencies_number(f.x, f.y) for f in self.fields
+        ])
+
+    def possible_values(self, x: int, y: int) -> tuple[int]:
+        """Metoda vrací všechny hodnoty, kterými lze políčko vyplnit tak, aby
+        nebylo narušeno žádné pravidlo konzistence hrací plochy.
+        """
+        return tuple([val for val in range(1, 9) if self.can_be_at(val, x, y)])
+
     def can_be_at(self, value: int, x: int, y: int) -> bool:
         """Metoda odpovědná za ověření, zda-li by dodaná hodnota na dodaných
         souřadnicích pro tuto hrací plochu nenarušila konzistenci hry.
